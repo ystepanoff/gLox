@@ -1,8 +1,13 @@
 package scanner
 
+import (
+	"fmt"
+)
+
 type Scanner struct {
-	source string
-	tokens []*Token
+	source    string
+	tokens    []*Token
+	hadErrors bool
 
 	start   int
 	current int
@@ -10,11 +15,14 @@ type Scanner struct {
 }
 
 func NewScanner(source string) *Scanner {
-	return &Scanner{source: source, line: 1}
+	return &Scanner{
+		source: source,
+		line:   1,
+	}
 }
 
 func (s *Scanner) ScanTokens() {
-	for !s.isAtEnd() {
+	for !s.isAtEnd() && s.peek() != '\n' {
 		s.start = s.current
 		s.scanToken()
 	}
@@ -57,12 +65,21 @@ func (s *Scanner) scanToken() {
 		s.addToken(SEMICOLON)
 	case '*':
 		s.addToken(STAR)
+	default:
+		s.reportError(s.line, fmt.Sprintf("Unexpected character: %s", string(c)))
 	}
 }
 
 func (s *Scanner) advance() rune {
 	s.current++
 	return rune(s.source[s.current-1])
+}
+
+func (s *Scanner) peek() rune {
+	if s.isAtEnd() {
+		return '\000'
+	}
+	return rune(s.source[s.current])
 }
 
 func (s *Scanner) addToken(tokenType TokenType) {
@@ -72,4 +89,9 @@ func (s *Scanner) addToken(tokenType TokenType) {
 func (s *Scanner) addTokenLiteral(tokenType TokenType, literal interface{}) {
 	text := s.source[s.start:s.current]
 	s.tokens = append(s.tokens, NewToken(tokenType, text, literal, s.line))
+}
+
+func (s *Scanner) reportError(line int, message string) {
+	s.hadErrors = true
+	fmt.Printf("[line %d] Error: %s\n", line, message)
 }

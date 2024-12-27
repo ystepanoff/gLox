@@ -25,9 +25,9 @@ func main() {
 		os.Exit(1)
 	}
 	if len(fileContents) > 0 {
-		scanner := scanner.NewScanner(string(fileContents))
-		scanner.ScanTokens()
-		for _, token := range scanner.GetTokens() {
+		scanner_ := scanner.NewScanner(string(fileContents))
+		scanner_.ScanTokens()
+		for _, token := range scanner_.GetTokens() {
 			fmt.Println(token)
 		}
 	} else {
