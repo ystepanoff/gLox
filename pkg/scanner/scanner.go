@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"fmt"
+	"os"
 )
 
 type Scanner struct {
@@ -38,6 +39,10 @@ func (s *Scanner) GetTokens() []*Token {
 	return s.tokens
 }
 
+func (s *Scanner) HadErrors() bool {
+	return s.hadErrors
+}
+
 func (s *Scanner) isAtEnd() bool {
 	return s.current >= len(s.source)
 }
@@ -66,7 +71,7 @@ func (s *Scanner) scanToken() {
 	case '*':
 		s.addToken(STAR)
 	default:
-		s.reportError(s.line, fmt.Sprintf("Unexpected character: %s", string(c)))
+		s.reportError(s.line, fmt.Sprintf("Unexpected character: %c", c))
 	}
 }
 
@@ -93,5 +98,5 @@ func (s *Scanner) addTokenLiteral(tokenType TokenType, literal interface{}) {
 
 func (s *Scanner) reportError(line int, message string) {
 	s.hadErrors = true
-	fmt.Printf("[line %d] Error: %s\n", line, message)
+	fmt.Fprintf(os.Stderr, "[line %d] Error: %s\n", line, message)
 }

@@ -30,6 +30,9 @@ func main() {
 		for _, token := range scanner_.GetTokens() {
 			fmt.Println(token)
 		}
+		if scanner_.HadErrors() {
+			os.Exit(65)
+		}
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
 	}
