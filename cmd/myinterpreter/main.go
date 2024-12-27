@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/codecrafters-io/interpreter-starter-go/pkg/scanner"
 	"os"
 )
 
 func main() {
-	fmt.Fprintln(os.Stderr, "Logs from your program will appear here!")
-
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, "Usage: ./myinterpreter tokenize <filename>")
+		fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
 		os.Exit(1)
 	}
 
@@ -26,8 +25,11 @@ func main() {
 		os.Exit(1)
 	}
 	if len(fileContents) > 0 {
-		fmt.Fprintln(os.Stderr, "Scanner not implemented")
-		os.Exit(1)
+		scanner := scanner.NewScanner(string(fileContents))
+		scanner.ScanTokens()
+		for _, token := range scanner.GetTokens() {
+			fmt.Println(token)
+		}
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
 	}
