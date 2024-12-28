@@ -1,6 +1,10 @@
 package scanner
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+	"strconv"
+)
 
 type TokenType int
 
@@ -117,10 +121,16 @@ func NewToken(tokenType TokenType, lexeme string, literal interface{}, line int)
 }
 
 func (token *Token) String() string {
-	if token.literal == nil {
-		return fmt.Sprintf("%s %s null", token.tokenType, token.lexeme)
+	literal := token.literal
+	if literal == nil {
+		literal = "null"
 	} else if token.tokenType == NUMBER {
-		return fmt.Sprintf("%s %s %f", token.tokenType, token.lexeme, token.literal.(float64))
+		_, fractionalPart := math.Modf(literal.(float64))
+		if fractionalPart == 0 {
+			literal = fmt.Sprintf("%.1f", literal.(float64))
+		} else {
+			literal = strconv.FormatFloat(literal.(float64), 'f', -1, 64)
+		}
 	}
-	return fmt.Sprintf("%s %s %v", token.tokenType, token.lexeme, token.literal)
+	return fmt.Sprintf("%s %s %v", token.tokenType, token.lexeme, literal)
 }
