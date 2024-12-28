@@ -113,7 +113,7 @@ func (s *Scanner) scanToken() {
 	case '"':
 		s.scanString()
 	default:
-		s.reportError(s.line, fmt.Sprintf("Unexpected character: %c.", c))
+		s.reportError(s.line, fmt.Sprintf("Unexpected character: %c", c))
 	}
 }
 
