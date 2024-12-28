@@ -117,6 +117,8 @@ func (s *Scanner) scanToken() {
 	default:
 		if unicode.IsDigit(c) {
 			s.scanNumber()
+		} else if unicode.IsLetter(c) || c == '_' {
+			s.scanIdentifier()
 		} else {
 			s.reportError(s.line, fmt.Sprintf("Unexpected character: %c", c))
 		}
@@ -166,6 +168,13 @@ func (s *Scanner) scanNumber() {
 	}
 	value, _ := strconv.ParseFloat(s.source[s.start:s.current], 64)
 	s.addTokenLiteral(NUMBER, value)
+}
+
+func (s *Scanner) scanIdentifier() {
+	for unicode.IsLetter(s.peek()) || unicode.IsDigit(s.peek()) || s.peek() == '_' {
+		s.advance()
+	}
+	s.addToken(IDENTIFIER)
 }
 
 func (s *Scanner) addToken(tokenType TokenType) {
