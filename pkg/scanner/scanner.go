@@ -3,6 +3,8 @@ package scanner
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"unicode"
 )
 
 type Scanner struct {
@@ -113,7 +115,11 @@ func (s *Scanner) scanToken() {
 	case '"':
 		s.scanString()
 	default:
-		s.reportError(s.line, fmt.Sprintf("Unexpected character: %c", c))
+		if unicode.IsDigit(c) {
+			s.scanNumber()
+		} else {
+			s.reportError(s.line, fmt.Sprintf("Unexpected character: %c", c))
+		}
 	}
 }
 
@@ -122,11 +128,15 @@ func (s *Scanner) advance() rune {
 	return rune(s.source[s.current-1])
 }
 
-func (s *Scanner) peek() rune {
-	if s.isAtEnd() {
+func (s *Scanner) peek(args ...int) rune {
+	step := 0
+	if len(args) > 0 {
+		step = args[0]
+	}
+	if s.current+step >= len(s.source) {
 		return '\000'
 	}
-	return rune(s.source[s.current])
+	return rune(s.source[s.current+step])
 }
 
 func (s *Scanner) scanString() {
@@ -142,6 +152,20 @@ func (s *Scanner) scanString() {
 	}
 	s.advance()
 	s.addTokenLiteral(STRING, s.source[s.start+1:s.current-1])
+}
+
+func (s *Scanner) scanNumber() {
+	for unicode.IsDigit(s.peek()) {
+		s.advance()
+	}
+	if s.peek() == '.' && unicode.IsDigit(s.peek(1)) {
+		s.advance()
+		for unicode.IsDigit(s.peek()) {
+			s.advance()
+		}
+	}
+	value, _ := strconv.ParseFloat(s.source[s.start:s.current], 64)
+	s.addTokenLiteral(NUMBER, value)
 }
 
 func (s *Scanner) addToken(tokenType TokenType) {

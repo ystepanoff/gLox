@@ -119,6 +119,8 @@ func NewToken(tokenType TokenType, lexeme string, literal interface{}, line int)
 func (token *Token) String() string {
 	if token.literal == nil {
 		return fmt.Sprintf("%s %s null", token.tokenType, token.lexeme)
+	} else if token.tokenType == NUMBER {
+		return fmt.Sprintf("%s %s %f", token.tokenType, token.lexeme, token.literal.(float64))
 	}
 	return fmt.Sprintf("%s %s %v", token.tokenType, token.lexeme, token.literal)
 }
