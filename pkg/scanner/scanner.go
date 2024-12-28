@@ -183,6 +183,9 @@ func (s *Scanner) addToken(tokenType TokenType) {
 
 func (s *Scanner) addTokenLiteral(tokenType TokenType, literal interface{}) {
 	text := s.source[s.start:s.current]
+	if keywordType, exists := keywords[text]; tokenType == IDENTIFIER && exists {
+		tokenType = keywordType
+	}
 	s.tokens = append(s.tokens, NewToken(tokenType, text, literal, s.line))
 }
 
