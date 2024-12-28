@@ -79,24 +79,32 @@ func (s *Scanner) scanToken() {
 		}
 	case '!':
 		if s.peek() == '=' {
-			s.current++
+			s.advance()
 			s.addToken(BANG_EQUAL)
 		} else {
 			s.addToken(BANG)
 		}
 	case '<':
 		if s.peek() == '=' {
-			s.current++
+			s.advance()
 			s.addToken(LESS_EQUAL)
 		} else {
 			s.addToken(LESS)
 		}
 	case '>':
 		if s.peek() == '=' {
-			s.current++
+			s.advance()
 			s.addToken(GREATER_EQUAL)
 		} else {
 			s.addToken(GREATER)
+		}
+	case '/':
+		if s.peek() == '/' {
+			for s.peek() != '\n' && !s.isAtEnd() {
+				s.advance()
+			}
+		} else {
+			s.addToken(SLASH)
 		}
 	default:
 		s.reportError(s.line, fmt.Sprintf("Unexpected character: %c", c))
