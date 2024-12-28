@@ -84,6 +84,20 @@ func (s *Scanner) scanToken() {
 		} else {
 			s.addToken(BANG)
 		}
+	case '<':
+		if s.peek() == '=' {
+			s.current++
+			s.addToken(LESS_EQUAL)
+		} else {
+			s.addToken(LESS)
+		}
+	case '>':
+		if s.peek() == '=' {
+			s.current++
+			s.addToken(GREATER_EQUAL)
+		} else {
+			s.addToken(GREATER)
+		}
 	default:
 		s.reportError(s.line, fmt.Sprintf("Unexpected character: %c", c))
 	}
