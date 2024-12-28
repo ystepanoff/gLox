@@ -70,6 +70,13 @@ func (s *Scanner) scanToken() {
 		s.addToken(SEMICOLON)
 	case '*':
 		s.addToken(STAR)
+	case '=':
+		if s.peek() == '=' {
+			s.addToken(EQUAL_EQUAL)
+			s.current++
+		} else {
+			s.addToken(EQUAL)
+		}
 	default:
 		s.reportError(s.line, fmt.Sprintf("Unexpected character: %c", c))
 	}
