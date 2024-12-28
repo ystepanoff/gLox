@@ -23,7 +23,7 @@ func NewScanner(source string) *Scanner {
 }
 
 func (s *Scanner) ScanTokens() {
-	for !s.isAtEnd() && s.peek() != '\n' {
+	for !s.isAtEnd() {
 		s.start = s.current
 		s.scanToken()
 	}
@@ -106,6 +106,10 @@ func (s *Scanner) scanToken() {
 		} else {
 			s.addToken(SLASH)
 		}
+	case ' ', '\r', '\t':
+		// Ignore
+	case '\n':
+		s.line++
 	default:
 		s.reportError(s.line, fmt.Sprintf("Unexpected character: %c", c))
 	}
