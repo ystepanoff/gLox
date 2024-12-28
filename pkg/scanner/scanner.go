@@ -72,8 +72,8 @@ func (s *Scanner) scanToken() {
 		s.addToken(STAR)
 	case '=':
 		if s.peek() == '=' {
-			s.addToken(EQUAL_EQUAL)
 			s.current++
+			s.addToken(EQUAL_EQUAL)
 		} else {
 			s.addToken(EQUAL)
 		}
