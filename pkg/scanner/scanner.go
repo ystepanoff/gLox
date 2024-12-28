@@ -77,6 +77,13 @@ func (s *Scanner) scanToken() {
 		} else {
 			s.addToken(EQUAL)
 		}
+	case '!':
+		if s.peek() == '=' {
+			s.current++
+			s.addToken(BANG_EQUAL)
+		} else {
+			s.addToken(BANG)
+		}
 	default:
 		s.reportError(s.line, fmt.Sprintf("Unexpected character: %c", c))
 	}
