@@ -29,12 +29,7 @@ func (s *Scanner) ScanTokens() {
 		s.start = s.current
 		s.scanToken()
 	}
-	s.tokens = append(s.tokens, &Token{
-		tokenType: EOF,
-		lexeme:    "",
-		literal:   nil,
-		line:      s.line,
-	})
+	s.tokens = append(s.tokens, NewToken(EOF, "", nil, s.line))
 }
 
 func (s *Scanner) GetTokens() []*Token {
@@ -191,5 +186,5 @@ func (s *Scanner) addTokenLiteral(tokenType TokenType, literal interface{}) {
 
 func (s *Scanner) reportError(line int, message string) {
 	s.hadErrors = true
-	fmt.Fprintf(os.Stderr, "[line %d] Error: %s\n", line, message)
+	fmt.Fprintf(os.Stderr, "[Line %d] Error: %s\n", line, message)
 }

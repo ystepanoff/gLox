@@ -124,26 +124,26 @@ func (tokenType TokenType) String() string {
 }
 
 type Token struct {
-	tokenType TokenType
-	lexeme    string
-	literal   interface{}
-	line      int
+	TokenType TokenType
+	Lexeme    string
+	Literal   interface{}
+	Line      int
 }
 
 func NewToken(tokenType TokenType, lexeme string, literal interface{}, line int) *Token {
 	return &Token{
-		tokenType: tokenType,
-		lexeme:    lexeme,
-		literal:   literal,
-		line:      line,
+		TokenType: tokenType,
+		Lexeme:    lexeme,
+		Literal:   literal,
+		Line:      line,
 	}
 }
 
 func (token *Token) String() string {
-	literal := token.literal
+	literal := token.Literal
 	if literal == nil {
 		literal = "null"
-	} else if token.tokenType == NUMBER {
+	} else if token.TokenType == NUMBER {
 		_, fractionalPart := math.Modf(literal.(float64))
 		if fractionalPart == 0 {
 			literal = fmt.Sprintf("%.1f", literal.(float64))
@@ -151,5 +151,5 @@ func (token *Token) String() string {
 			literal = strconv.FormatFloat(literal.(float64), 'f', -1, 64)
 		}
 	}
-	return fmt.Sprintf("%s %s %v", token.tokenType, token.lexeme, literal)
+	return fmt.Sprintf("%s %s %v", token.TokenType, token.Lexeme, literal)
 }
