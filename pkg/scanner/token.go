@@ -130,15 +130,6 @@ type Token struct {
 	Line      int
 }
 
-func NewToken(tokenType TokenType, lexeme string, literal interface{}, line int) *Token {
-	return &Token{
-		TokenType: tokenType,
-		Lexeme:    lexeme,
-		Literal:   literal,
-		Line:      line,
-	}
-}
-
 func (token *Token) String() string {
 	literal := token.Literal
 	if literal == nil {

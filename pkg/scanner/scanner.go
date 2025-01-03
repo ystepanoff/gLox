@@ -29,7 +29,12 @@ func (s *Scanner) ScanTokens() {
 		s.start = s.current
 		s.scanToken()
 	}
-	s.tokens = append(s.tokens, NewToken(EOF, "", nil, s.line))
+	s.tokens = append(s.tokens, &Token{
+		TokenType: EOF,
+		Lexeme:    "",
+		Literal:   nil,
+		Line:      s.line,
+	})
 }
 
 func (s *Scanner) GetTokens() []*Token {
@@ -181,7 +186,12 @@ func (s *Scanner) addTokenLiteral(tokenType TokenType, literal interface{}) {
 	if keywordType, exists := keywords[text]; tokenType == IDENTIFIER && exists {
 		tokenType = keywordType
 	}
-	s.tokens = append(s.tokens, NewToken(tokenType, text, literal, s.line))
+	s.tokens = append(s.tokens, &Token{
+		TokenType: tokenType,
+		Lexeme:    text,
+		Literal:   literal,
+		Line:      s.line,
+	})
 }
 
 func (s *Scanner) reportError(line int, message string) {
