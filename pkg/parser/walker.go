@@ -67,8 +67,8 @@ func (printer *ASTPrinter) process(
 	return builder.String()
 }
 
-func (printer *ASTPrinter) Print(expression Expression) string {
-	return expression.Accept(printer).(string)
+func (printer *ASTPrinter) Print(expression Expression) interface{} {
+	return expression.Accept(printer)
 }
 
 // RPNPrinter
