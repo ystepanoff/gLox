@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/codecrafters-io/interpreter-starter-go/pkg/parser"
 	"github.com/codecrafters-io/interpreter-starter-go/pkg/scanner"
-	"os"
 )
 
 func main() {
@@ -32,22 +33,11 @@ func main() {
 				os.Exit(65)
 			}
 		case "parse":
-			fmt.Println("Not implemented")
-			expr := &parser.Binary{
-				Left: &parser.Binary{
-					Left:     &parser.Literal{Value: 1},
-					Operator: &scanner.Token{Lexeme: "+"},
-					Right:    &parser.Literal{Value: 2},
-				},
-				Operator: &scanner.Token{Lexeme: "*"},
-				Right: &parser.Binary{
-					Left:     &parser.Literal{Value: 4},
-					Operator: &scanner.Token{Lexeme: "-"},
-					Right:    &parser.Literal{Value: 3},
-				},
-			}
-			printer := parser.NewRPNPrinter()
-			fmt.Println(printer.Print(expr))
+			scanner_ := scanner.NewScanner(string(fileContents))
+			scanner_.ScanTokens()
+			parser_ := parser.NewParser(scanner_.GetTokens())
+			printer := parser.NewASTPrinter()
+			fmt.Println(printer.Print(parser_.Parse()))
 		}
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner

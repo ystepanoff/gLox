@@ -1,5 +1,6 @@
 package parser
 
+// ExpressionVisitor
 type ExpressionVisitor interface {
 	VisitBinary(binary *Binary) interface{}
 	VisitGrouping(grouping *Grouping) interface{}

@@ -6,6 +6,7 @@ import (
 	"strconv"
 )
 
+// TokenType
 type TokenType int
 
 const (
@@ -123,6 +124,7 @@ func (tokenType TokenType) String() string {
 	return tokenTypes[tokenType]
 }
 
+// Token
 type Token struct {
 	TokenType TokenType
 	Lexeme    string

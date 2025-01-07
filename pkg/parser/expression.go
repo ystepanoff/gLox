@@ -8,7 +8,7 @@ type Expression interface {
 
 type Binary struct {
 	Left     Expression
-	Operator *scanner.Token
+	Operator scanner.Token
 	Right    Expression
 }
 
@@ -21,6 +21,6 @@ type Literal struct {
 }
 
 type Unary struct {
-	Operator *scanner.Token
+	Operator scanner.Token
 	Right    Expression
 }

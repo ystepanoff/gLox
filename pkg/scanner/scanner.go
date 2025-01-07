@@ -7,9 +7,10 @@ import (
 	"unicode"
 )
 
+// Scanner
 type Scanner struct {
 	source    string
-	tokens    []*Token
+	tokens    []Token
 	hadErrors bool
 
 	start   int
@@ -29,7 +30,7 @@ func (s *Scanner) ScanTokens() {
 		s.start = s.current
 		s.scanToken()
 	}
-	s.tokens = append(s.tokens, &Token{
+	s.tokens = append(s.tokens, Token{
 		TokenType: EOF,
 		Lexeme:    "",
 		Literal:   nil,
@@ -37,7 +38,7 @@ func (s *Scanner) ScanTokens() {
 	})
 }
 
-func (s *Scanner) GetTokens() []*Token {
+func (s *Scanner) GetTokens() []Token {
 	return s.tokens
 }
 
@@ -183,10 +184,11 @@ func (s *Scanner) addToken(tokenType TokenType) {
 
 func (s *Scanner) addTokenLiteral(tokenType TokenType, literal interface{}) {
 	text := s.source[s.start:s.current]
-	if keywordType, exists := keywords[text]; tokenType == IDENTIFIER && exists {
+	if keywordType, exists := keywords[text]; tokenType == IDENTIFIER &&
+		exists {
 		tokenType = keywordType
 	}
-	s.tokens = append(s.tokens, &Token{
+	s.tokens = append(s.tokens, Token{
 		TokenType: tokenType,
 		Lexeme:    text,
 		Literal:   literal,
