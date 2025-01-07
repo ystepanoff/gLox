@@ -198,5 +198,5 @@ func (s *Scanner) addTokenLiteral(tokenType TokenType, literal interface{}) {
 
 func (s *Scanner) reportError(line int, message string) {
 	s.hadErrors = true
-	fmt.Fprintf(os.Stderr, "[Line %d] Error: %s\n", line, message)
+	fmt.Fprintf(os.Stderr, "[line %d] Error: %s\n", line, message)
 }
