@@ -36,12 +36,12 @@ func main() {
 			scanner_ := scanner.NewScanner(string(fileContents))
 			scanner_.ScanTokens()
 			if scanner_.HadErrors() {
-				return
+				os.Exit(65)
 			}
 			parser_ := parser.NewParser(scanner_.GetTokens())
 			expr := parser_.Parse()
 			if parser_.HadErrors() {
-				return
+				os.Exit(65)
 			}
 			printer := parser.NewASTPrinter()
 			fmt.Println(printer.Print(expr))
