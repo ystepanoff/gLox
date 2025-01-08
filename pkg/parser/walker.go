@@ -2,6 +2,8 @@ package parser
 
 import (
 	"fmt"
+	"math"
+	"strconv"
 	"strings"
 )
 
@@ -25,6 +27,14 @@ func (bw *BaseWalker) VisitGrouping(grouping *Grouping) interface{} {
 func (bw *BaseWalker) VisitLiteral(literal *Literal) interface{} {
 	if literal.Value == nil {
 		return "nil"
+	}
+	if value, ok := literal.Value.(float64); ok {
+		_, fractionalPart := math.Modf(value)
+		if fractionalPart == 0 {
+			return fmt.Sprintf("%.1f", value)
+		} else {
+			return strconv.FormatFloat(value, 'f', -1, 64)
+		}
 	}
 	return literal.Value
 }
