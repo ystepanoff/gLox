@@ -55,6 +55,7 @@ func (parser *Parser) consume(
 	if parser.isAtEnd() || parser.peek().TokenType != tokenType {
 		parser.reportError(parser.peek(), message)
 	}
+	parser.advance()
 }
 
 func (parser *Parser) reportError(token scanner.Token, message string) {
