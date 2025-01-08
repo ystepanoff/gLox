@@ -11,6 +11,8 @@ import (
 type Parser struct {
 	tokens  []scanner.Token
 	current int
+
+	hadErrors bool
 }
 
 func NewParser(tokens []scanner.Token) *Parser {
@@ -49,24 +51,28 @@ func (parser *Parser) match(tokenTypes ...scanner.TokenType) bool {
 func (parser *Parser) consume(
 	tokenType scanner.TokenType,
 	message string,
-) (scanner.Token, error) {
-	if !parser.isAtEnd() && parser.peek().TokenType == tokenType {
-		return parser.advance(), nil
+) {
+	if parser.isAtEnd() || parser.peek().TokenType != tokenType {
+		parser.reportError(parser.peek(), message)
 	}
-	return parser.peek(), fmt.Errorf("%v: %s", parser.peek(), message)
 }
 
 func (parser *Parser) reportError(token scanner.Token, message string) {
 	if token.TokenType == scanner.EOF {
 		fmt.Fprintf(
 			os.Stderr,
-			"[Line %d] Error: at end %s",
+			"[line %d] Error at end: %s\n",
 			token.Line,
 			message,
 		)
 	} else {
-		fmt.Fprintf(os.Stderr, "[Line %d] Error: at '%s' %s", token.Line, token.Lexeme, message)
+		fmt.Fprintf(os.Stderr, "[line %d] Error at '%s': %s\n", token.Line, token.Lexeme, message)
 	}
+	parser.hadErrors = true
+}
+
+func (parser *Parser) HadErrors() bool {
+	return parser.hadErrors
 }
 
 func (parser *Parser) Parse() Expression {
@@ -154,5 +160,6 @@ func (parser *Parser) primary() Expression {
 		parser.consume(scanner.RIGHT_PAREN, "Expect ')' after expression.")
 		return &Grouping{Expression: expression}
 	}
+	parser.reportError(parser.peek(), "Expect expression.")
 	return nil
 }

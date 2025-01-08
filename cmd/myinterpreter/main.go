@@ -35,9 +35,16 @@ func main() {
 		case "parse":
 			scanner_ := scanner.NewScanner(string(fileContents))
 			scanner_.ScanTokens()
+			if scanner_.HadErrors() {
+				return
+			}
 			parser_ := parser.NewParser(scanner_.GetTokens())
+			expr := parser_.Parse()
+			if parser_.HadErrors() {
+				return
+			}
 			printer := parser.NewASTPrinter()
-			fmt.Println(printer.Print(parser_.Parse()))
+			fmt.Println(printer.Print(expr))
 		}
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
