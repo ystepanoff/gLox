@@ -30,5 +30,9 @@ func (i *Interpreter) VisitUnary(unary *parser.Unary) interface{} {
 
 func (i *Interpreter) Interpret(expression parser.Expression) {
 	value := expression.Accept(i)
-	fmt.Println(value)
+	if value == nil {
+		fmt.Println("nil")
+	} else {
+		fmt.Println(value)
+	}
 }
