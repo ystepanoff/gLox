@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/codecrafters-io/interpreter-starter-go/pkg/interpreter"
 	"github.com/codecrafters-io/interpreter-starter-go/pkg/parser"
 	"github.com/codecrafters-io/interpreter-starter-go/pkg/scanner"
 )
@@ -45,6 +46,19 @@ func main() {
 			}
 			printer := parser.NewASTPrinter()
 			fmt.Println(printer.Print(expr))
+		case "evaluate":
+			scanner_ := scanner.NewScanner(string(fileContents))
+			scanner_.ScanTokens()
+			if scanner_.HadErrors() {
+				os.Exit(65)
+			}
+			parser_ := parser.NewParser(scanner_.GetTokens())
+			expr := parser_.Parse()
+			if parser_.HadErrors() {
+				os.Exit(65)
+			}
+			interp_ := interpreter.NewInterpreter()
+			interp_.Interpret(expr)
 		}
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
