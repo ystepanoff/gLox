@@ -17,7 +17,7 @@ func (i *Interpreter) VisitBinary(binary *parser.Binary) interface{} {
 }
 
 func (i *Interpreter) VisitGrouping(grouping *parser.Grouping) interface{} {
-	return nil
+	return grouping.Expression.Accept(i)
 }
 
 func (i *Interpreter) VisitLiteral(literal *parser.Literal) interface{} {
