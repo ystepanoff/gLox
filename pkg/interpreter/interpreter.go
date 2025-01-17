@@ -32,12 +32,12 @@ func (i *Interpreter) VisitUnary(unary *parser.Unary) interface{} {
 		return -value.(float64)
 	case scanner.BANG:
 		if value == nil {
-			return false
+			return true
 		}
 		if v, ok := value.(bool); ok {
-			return v
+			return !v
 		}
-		return true
+		return false
 	}
 	return value
 }
