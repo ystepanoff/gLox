@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/codecrafters-io/interpreter-starter-go/pkg/parser"
+	"github.com/codecrafters-io/interpreter-starter-go/pkg/scanner"
 )
 
 type Interpreter struct{}
@@ -25,7 +26,20 @@ func (i *Interpreter) VisitLiteral(literal *parser.Literal) interface{} {
 }
 
 func (i *Interpreter) VisitUnary(unary *parser.Unary) interface{} {
-	return nil
+	value := unary.Right.Accept(i)
+	switch unary.Operator.TokenType {
+	case scanner.MINUS:
+		return -value.(float64)
+	case scanner.BANG:
+		if value == nil {
+			return false
+		}
+		if v, ok := value.(bool); ok {
+			return v
+		}
+		return true
+	}
+	return value
 }
 
 func (i *Interpreter) Interpret(expression parser.Expression) {
