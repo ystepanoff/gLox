@@ -36,6 +36,7 @@ func (lox *Lox) Parse() error {
 	lox.Parser.Parse()
 	if lox.Parser.HadErrors() {
 		lox.hadErrors = true
+		return nil
 	}
 	lox.ASTPrinter = parser.NewASTPrinter()
 	return nil
@@ -47,6 +48,7 @@ func (lox *Lox) Interpret() error {
 	lox.Interpreter.Interpret(lox.Parser.GetParsedExpression())
 	if lox.Interpreter.HadErrors() {
 		lox.hadErrors = true
+		return nil
 	}
 	return nil
 }
