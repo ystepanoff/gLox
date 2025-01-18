@@ -22,6 +22,7 @@ func main() {
 	}
 	if len(fileContents) > 0 {
 		lox := lox.NewLox(string(fileContents))
+
 		switch command {
 		case "tokenize":
 			lox.Scan()
@@ -38,7 +39,11 @@ func main() {
 
 		case "evaluate":
 			lox.Interpret()
+			if lox.Interpreter.HadErrors() {
+				os.Exit(70)
+			}
 		}
+
 		if lox.HadErrors() {
 			os.Exit(65)
 		}

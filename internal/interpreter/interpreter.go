@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/codecrafters-io/interpreter-starter-go/internal/parser"
 	"github.com/codecrafters-io/interpreter-starter-go/internal/scanner"
@@ -15,11 +16,18 @@ func NewInterpreter() *Interpreter {
 	return &Interpreter{}
 }
 
+func (i *Interpreter) reportError(operator scanner.Token, message string) {
+	fmt.Fprintf(os.Stderr, "%s", message)
+}
+
 func (i *Interpreter) HadErrors() bool {
 	return i.hadErrors
 }
 
 func (i *Interpreter) VisitBinary(binary *parser.Binary) interface{} {
+	if i.hadErrors {
+		return nil
+	}
 	left := binary.Left.Accept(i)
 	right := binary.Right.Accept(i)
 	switch binary.Operator.TokenType {
@@ -69,32 +77,49 @@ func (i *Interpreter) VisitBinary(binary *parser.Binary) interface{} {
 }
 
 func (i *Interpreter) VisitGrouping(grouping *parser.Grouping) interface{} {
+	if i.hadErrors {
+		return nil
+	}
 	return grouping.Expression.Accept(i)
 }
 
 func (i *Interpreter) VisitLiteral(literal *parser.Literal) interface{} {
+	if i.hadErrors {
+		return nil
+	}
 	return literal.Value
 }
 
 func (i *Interpreter) VisitUnary(unary *parser.Unary) interface{} {
-	value := unary.Right.Accept(i)
+	if i.hadErrors {
+		return nil
+	}
+	right := unary.Right.Accept(i)
 	switch unary.Operator.TokenType {
 	case scanner.MINUS:
-		return -value.(float64)
+		if !checkValueType[float64](right) {
+			i.reportError(unary.Operator, "Operand must be a number.")
+			i.hadErrors = true
+			return nil
+		}
+		return -right.(float64)
 	case scanner.BANG:
-		if value == nil {
+		if right == nil {
 			return true
 		}
-		if v, ok := value.(bool); ok {
+		if v, ok := right.(bool); ok {
 			return !v
 		}
 		return false
 	}
-	return value
+	return right
 }
 
 func (i *Interpreter) Interpret(expression parser.Expression) {
 	value := expression.Accept(i)
+	if i.hadErrors {
+		return
+	}
 	if value == nil {
 		fmt.Println("nil")
 	} else {
