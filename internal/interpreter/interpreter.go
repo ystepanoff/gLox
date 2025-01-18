@@ -107,6 +107,11 @@ func (i *Interpreter) VisitBinary(binary *parser.Binary) interface{} {
 		i.hadErrors = true
 		return nil
 	case scanner.MINUS:
+		if !checkValuesType[float64](left, right) {
+			i.reportError(binary.Operator, "Operands must be numbers.")
+			i.hadErrors = true
+			return nil
+		}
 		return left.(float64) - right.(float64)
 	}
 	return nil
