@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/codecrafters-io/interpreter-starter-go/pkg/interpreter"
-	"github.com/codecrafters-io/interpreter-starter-go/pkg/parser"
-	"github.com/codecrafters-io/interpreter-starter-go/pkg/scanner"
+	"github.com/codecrafters-io/interpreter-starter-go/pkg/lox"
 )
 
 func main() {
@@ -23,42 +21,24 @@ func main() {
 		os.Exit(1)
 	}
 	if len(fileContents) > 0 {
+		lox := lox.NewLox(string(fileContents))
 		switch command {
 		case "tokenize":
-			scanner_ := scanner.NewScanner(string(fileContents))
-			scanner_.ScanTokens()
-			for _, token := range scanner_.GetTokens() {
+			lox.Scan()
+			for _, token := range lox.Scanner.GetTokens() {
 				fmt.Println(&token)
 			}
-			if scanner_.HadErrors() {
+			if lox.HadErrors() {
 				os.Exit(65)
 			}
 		case "parse":
-			scanner_ := scanner.NewScanner(string(fileContents))
-			scanner_.ScanTokens()
-			if scanner_.HadErrors() {
+			lox.Parse()
+			if lox.HadErrors() {
 				os.Exit(65)
 			}
-			parser_ := parser.NewParser(scanner_.GetTokens())
-			expr := parser_.Parse()
-			if parser_.HadErrors() {
-				os.Exit(65)
-			}
-			printer := parser.NewASTPrinter()
-			fmt.Println(printer.Print(expr))
+			fmt.Println(lox.ASTPrinter.Print(lox.Parser.GetParsedExpression()))
 		case "evaluate":
-			scanner_ := scanner.NewScanner(string(fileContents))
-			scanner_.ScanTokens()
-			if scanner_.HadErrors() {
-				os.Exit(65)
-			}
-			parser_ := parser.NewParser(scanner_.GetTokens())
-			expr := parser_.Parse()
-			if parser_.HadErrors() {
-				os.Exit(65)
-			}
-			interp_ := interpreter.NewInterpreter()
-			interp_.Interpret(expr)
+			lox.Interpret()
 		}
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner

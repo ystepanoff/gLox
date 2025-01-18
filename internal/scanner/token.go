@@ -120,8 +120,8 @@ var keywords = map[string]TokenType{
 	"while":  WHILE,
 }
 
-func (tokenType TokenType) String() string {
-	return tokenTypes[tokenType]
+func (t TokenType) String() string {
+	return tokenTypes[t]
 }
 
 // Token
@@ -132,11 +132,11 @@ type Token struct {
 	Line      int
 }
 
-func (token *Token) String() string {
-	literal := token.Literal
+func (t *Token) String() string {
+	literal := t.Literal
 	if literal == nil {
 		literal = "null"
-	} else if token.TokenType == NUMBER {
+	} else if t.TokenType == NUMBER {
 		_, fractionalPart := math.Modf(literal.(float64))
 		if fractionalPart == 0 {
 			literal = fmt.Sprintf("%.1f", literal.(float64))
@@ -144,5 +144,5 @@ func (token *Token) String() string {
 			literal = strconv.FormatFloat(literal.(float64), 'f', -1, 64)
 		}
 	}
-	return fmt.Sprintf("%s %s %v", token.TokenType, token.Lexeme, literal)
+	return fmt.Sprintf("%s %s %v", t.TokenType, t.Lexeme, literal)
 }

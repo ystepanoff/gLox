@@ -1,6 +1,6 @@
 package parser
 
-import "github.com/codecrafters-io/interpreter-starter-go/pkg/scanner"
+import "github.com/codecrafters-io/interpreter-starter-go/internal/scanner"
 
 type Expression interface {
 	Accept(visitor ExpressionVisitor) interface{}

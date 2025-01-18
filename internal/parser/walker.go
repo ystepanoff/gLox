@@ -43,11 +43,11 @@ func (bw *BaseWalker) VisitUnary(unary *Unary) interface{} {
 	return bw.walker.process(unary.Operator.Lexeme, unary.Right)
 }
 
-func (walker *BaseWalker) process(
+func (bw *BaseWalker) process(
 	name string,
 	expressions ...Expression,
 ) interface{} {
-	fmt.Println("walker.process() should be implemented by specific types")
+	fmt.Println("process() should be implemented by specific types")
 	return nil
 }
 
@@ -62,7 +62,7 @@ func NewASTPrinter() *ASTPrinter {
 	return printer
 }
 
-func (printer *ASTPrinter) process(
+func (p *ASTPrinter) process(
 	name string,
 	expressions ...Expression,
 ) interface{} {
@@ -71,14 +71,14 @@ func (printer *ASTPrinter) process(
 	builder.WriteString(name)
 	for _, expression := range expressions {
 		builder.WriteString(" ")
-		builder.WriteString(fmt.Sprintf("%v", expression.Accept(printer)))
+		builder.WriteString(fmt.Sprintf("%v", expression.Accept(p)))
 	}
 	builder.WriteString(")")
 	return builder.String()
 }
 
-func (printer *ASTPrinter) Print(expression Expression) interface{} {
-	return expression.Accept(printer)
+func (p *ASTPrinter) Print(expression Expression) interface{} {
+	return expression.Accept(p)
 }
 
 // RPNPrinter
@@ -92,22 +92,22 @@ func NewRPNPrinter() *RPNPrinter {
 	return printer
 }
 
-func (printer *RPNPrinter) process(
+func (p *RPNPrinter) process(
 	name string,
 	expressions ...Expression,
 ) interface{} {
 	var builder strings.Builder
 	for _, expression := range expressions {
 		builder.WriteString(
-			fmt.Sprintf("%v ", expression.Accept(printer)),
+			fmt.Sprintf("%v ", expression.Accept(p)),
 		)
 	}
 	builder.WriteString(name)
 	return builder.String()
 }
 
-func (printer *RPNPrinter) Print(expression Expression) string {
-	value := expression.Accept(printer)
+func (p *RPNPrinter) Print(expression Expression) string {
+	value := expression.Accept(p)
 	if value == nil {
 		return "nil"
 	}

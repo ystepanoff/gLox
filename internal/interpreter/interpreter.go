@@ -3,14 +3,20 @@ package interpreter
 import (
 	"fmt"
 
-	"github.com/codecrafters-io/interpreter-starter-go/pkg/parser"
-	"github.com/codecrafters-io/interpreter-starter-go/pkg/scanner"
+	"github.com/codecrafters-io/interpreter-starter-go/internal/parser"
+	"github.com/codecrafters-io/interpreter-starter-go/internal/scanner"
 )
 
-type Interpreter struct{}
+type Interpreter struct {
+	hadErrors bool
+}
 
 func NewInterpreter() *Interpreter {
 	return &Interpreter{}
+}
+
+func (i *Interpreter) HadErrors() bool {
+	return i.hadErrors
 }
 
 func (i *Interpreter) VisitBinary(binary *parser.Binary) interface{} {
