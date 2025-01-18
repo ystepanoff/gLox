@@ -22,7 +22,16 @@ func (i *Interpreter) VisitBinary(binary *parser.Binary) interface{} {
 	case scanner.SLASH:
 		return left.(float64) / right.(float64)
 	case scanner.PLUS:
-		return left.(float64) + right.(float64)
+		if l, okL := left.(float64); okL {
+			if r, okR := right.(float64); okR {
+				return l + r
+			}
+		}
+		if l, okL := left.(string); okL {
+			if r, okR := right.(string); okR {
+				return l + r
+			}
+		}
 	case scanner.MINUS:
 		return left.(float64) - right.(float64)
 	}
