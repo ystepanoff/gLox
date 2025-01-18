@@ -1,6 +1,8 @@
 package lox
 
 import (
+	"errors"
+
 	"github.com/codecrafters-io/interpreter-starter-go/internal/interpreter"
 	"github.com/codecrafters-io/interpreter-starter-go/internal/parser"
 	"github.com/codecrafters-io/interpreter-starter-go/internal/scanner"
@@ -26,29 +28,35 @@ func (lox *Lox) Scan() error {
 	lox.Scanner.ScanTokens()
 	if lox.Scanner.HadErrors() {
 		lox.hadErrors = true
+		return errors.New("scanner error")
 	}
 	return nil
 }
 
 func (lox *Lox) Parse() error {
-	lox.Scan()
+	if err := lox.Scan(); err != nil {
+		return err
+	}
 	lox.Parser = parser.NewParser(lox.Scanner.GetTokens())
 	lox.Parser.Parse()
 	if lox.Parser.HadErrors() {
 		lox.hadErrors = true
-		return nil
+		return errors.New("parser error")
+	} else {
+		lox.ASTPrinter = parser.NewASTPrinter()
 	}
-	lox.ASTPrinter = parser.NewASTPrinter()
 	return nil
 }
 
 func (lox *Lox) Interpret() error {
-	lox.Parse()
+	if err := lox.Parse(); err != nil {
+		return err
+	}
 	lox.Interpreter = interpreter.NewInterpreter()
 	lox.Interpreter.Interpret(lox.Parser.GetParsedExpression())
 	if lox.Interpreter.HadErrors() {
 		lox.hadErrors = true
-		return nil
+		return errors.New("runtime error")
 	}
 	return nil
 }

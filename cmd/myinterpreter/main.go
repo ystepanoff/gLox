@@ -28,17 +28,19 @@ func main() {
 			for _, token := range lox.Scanner.GetTokens() {
 				fmt.Println(&token)
 			}
-			if lox.HadErrors() {
-				os.Exit(65)
-			}
+
 		case "parse":
-			lox.Parse()
-			if lox.HadErrors() {
-				os.Exit(65)
+			if err := lox.Parse(); err == nil {
+				fmt.Println(
+					lox.ASTPrinter.Print(lox.Parser.GetParsedExpression()),
+				)
 			}
-			fmt.Println(lox.ASTPrinter.Print(lox.Parser.GetParsedExpression()))
+
 		case "evaluate":
 			lox.Interpret()
+		}
+		if lox.HadErrors() {
+			os.Exit(65)
 		}
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
