@@ -32,16 +32,46 @@ func (i *Interpreter) VisitBinary(binary *parser.Binary) interface{} {
 	right := binary.Right.Accept(i)
 	switch binary.Operator.TokenType {
 	case scanner.GREATER:
+		if !checkValuesType[float64](left, right) {
+			i.reportError(binary.Operator, "Operands must be numbers.")
+			i.hadErrors = true
+			return nil
+		}
 		return left.(float64) > right.(float64)
 	case scanner.GREATER_EQUAL:
+		if !checkValuesType[float64](left, right) {
+			i.reportError(binary.Operator, "Operands must be numbers.")
+			i.hadErrors = true
+			return nil
+		}
 		return left.(float64) >= right.(float64)
 	case scanner.LESS:
+		if !checkValuesType[float64](left, right) {
+			i.reportError(binary.Operator, "Operands must be numbers.")
+			i.hadErrors = true
+			return nil
+		}
 		return left.(float64) < right.(float64)
 	case scanner.LESS_EQUAL:
+		if !checkValuesType[float64](left, right) {
+			i.reportError(binary.Operator, "Operands must be numbers.")
+			i.hadErrors = true
+			return nil
+		}
 		return left.(float64) <= right.(float64)
 	case scanner.STAR:
+		if !checkValuesType[float64](left, right) {
+			i.reportError(binary.Operator, "Operands must be numbers.")
+			i.hadErrors = true
+			return nil
+		}
 		return left.(float64) * right.(float64)
 	case scanner.SLASH:
+		if !checkValuesType[float64](left, right) {
+			i.reportError(binary.Operator, "Operands must be numbers.")
+			i.hadErrors = true
+			return nil
+		}
 		return left.(float64) / right.(float64)
 	case scanner.EQUAL_EQUAL:
 		if left == nil && right == nil {
@@ -70,6 +100,12 @@ func (i *Interpreter) VisitBinary(binary *parser.Binary) interface{} {
 				return l + r
 			}
 		}
+		i.reportError(
+			binary.Operator,
+			"Operands must be two numbers or two strings.",
+		)
+		i.hadErrors = true
+		return nil
 	case scanner.MINUS:
 		return left.(float64) - right.(float64)
 	}
