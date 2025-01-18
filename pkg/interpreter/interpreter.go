@@ -17,6 +17,14 @@ func (i *Interpreter) VisitBinary(binary *parser.Binary) interface{} {
 	left := binary.Left.Accept(i)
 	right := binary.Right.Accept(i)
 	switch binary.Operator.TokenType {
+	case scanner.GREATER:
+		return left.(float64) > right.(float64)
+	case scanner.GREATER_EQUAL:
+		return left.(float64) >= right.(float64)
+	case scanner.LESS:
+		return left.(float64) < right.(float64)
+	case scanner.LESS_EQUAL:
+		return left.(float64) <= right.(float64)
 	case scanner.STAR:
 		return left.(float64) * right.(float64)
 	case scanner.SLASH:
